@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    /* 右侧区域样式 */
+    .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 200px;
+            padding: 50px;
+        }
+
+        .form {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+
+        /**/
+        #main {
+				margin-left: 200px;
+				padding: 20px;
+			}
+
+			#data-screen {
+				width: 100%;
+				height: 500px;
+				background-color: #f9f9f9;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			#data-screen h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+			}
+
+			@media (max-width: 768px) {
+
+				/* 在小屏幕下隐藏导航栏 */
+				#sidebar {
+					left: -200px;
+				}
+
+				#main {
+					margin-left: 0;
+				}
+			}
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+</style>
+</head>
+<body>  
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.16.0/dist/d3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+    <!-- 右侧内容区域 -->
+    <div class="container">
+        <!-- 搜索表单 -->
+        <form class="form">
+            <label for="keywords">关键词：</label>
+            <input type="text" id="keywords" name="keywords" placeholder="请输入关键词">
+            <label for="category">分类：</label>
+            <select id="category" name="category">
+                <option value="">全部</option>
+                <option value="概念">概念</option>
+                <option value="组成部分">组成部分</option>
+                <option value="数据结构类型">数据结构类型</option>
+                <option value="具体数据结构">具体数据结构</option>
+                <option value="栈的实现">栈的实现</option>
+                <option value="队列的实现">队列的实现</option>
+                <option value="串的存储方式">串的存储方式</option>
+                <option value="数组类型">数组类型</option>
+                <option value="存储优化">存储优化</option>
+                <option value="特殊结构">特殊结构</option>
+                <option value="图的类型">图的类型</option>
+                <option value="图的存储方式">图的存储方式</option>
+                <option value="算法应用">算法应用</option>
+                <option value="数据结构存储方式">数据结构存储方式</option>
+                <option value="操作定义">操作定义</option>
+                <option value="分类">分类</option>
+                <option value="概念">概念</option>
+                <option value="特性">特性</option>
+                <option value="目标">目标</option>
+                <option value="效率度量">效率度量</option>
+                <option value="度量标准">度量标准</option>
+                <option value="链表类型">链表类型</option>
+                <option value="实现方式">实现方式</option>
+                <option value="表示方式">表示方式</option>
+                <option value="查找类型">查找类型</option>
+                <option value="效率指标">效率指标</option>
+            </select>
+            <input type="submit" value="搜索">
+        </form>
+
+        <!-- 关系图容器 -->
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 获取搜索表单和关系图容器
+        var form = document.querySelector('.form');
+        var chart = echarts.init(document.getElementById('chart'));
+        var data = [];
+        var links = [];
+        var categories = [];
+
+        // 根据您的数据格式化和添加的内容
+        var lines = [
+        "相互之间存在一种或者多种特定关系的数据元素的集合,定义,数据结构,概念,概念",
+        "三要素,包含,数据结构,概念,组成部分",
+        "逻辑结构,包含,三要素,组成部分,组成部分",
+        "线性结构,包含,逻辑结构,组成部分,数据结构类型",
+        "一般线性表,包含,线性结构,数据结构类型,具体数据结构",
+        "栈,包含,线性结构,数据结构类型,具体数据结构",
+        "顺序栈,包含,栈,具体数据结构,栈的实现",
+        "链栈,包含,栈,具体数据结构,栈的实现",
+        "共享栈,包含,栈,具体数据结构,栈的实现",
+        "只允许在一端进行插入或删除操作的线性表,定义,栈,具体数据结构,概念",
+        "队列,包含,线性结构,数据结构类型,具体数据结构",
+        "循环队列,包含,队列,具体数据结构,队列的实现",
+        "链式队列,包含,队列,具体数据结构,队列的实现",
+        "双端队列,包含,队列,具体数据结构,队列的实现",
+        "串,包含,线性结构,数据结构类型,具体数据结构",
+        "由零个或多个字符组成的有限序列,定义,串,具体数据结构,概念",
+        "定长顺序存储表示,存储方式,串,具体数据结构,串的存储方式",
+        "堆分配存储表示,存储方式,串,具体数据结构,串的存储方式",
+        "块链存储表示,存储方式,串,具体数据结构,串的存储方式",
+        "简单模式匹配算法,模式匹配,串,具体数据结构,算法",
+        "KMP算法,模式匹配,串,具体数据结构,算法",
+        "数组,包含,线性结构,数据结构类型,具体数据结构",
+        "一维数组,包含,数组,具体数据结构,数组类型",
+        "多维数组,包含,数组,具体数据结构,数组类型",
+        "压缩存储,包含,多维数组,数组类型,存储优化",
+        "稀疏矩阵,包含,多维数组,数组类型,特殊结构",
+        "非线性结构,包含,逻辑结构,组成部分,数据结构类型",
+        "集合,包含,非线性结构,数据结构类型,具体数据结构",
+        "二叉树,包含,非线性结构,数据结构类型,具体数据结构",
+        "图,包含,非线性结构,数据结构类型,具体数据结构",
+        "有向图,包含,图,具体数据结构,图的类型",
+        "无向图,包含,图,具体数据结构,图的类型",
+        "邻接矩阵法,存储方式,图,具体数据结构,图的存储方式",
+        "邻接表法,存储方式,图,具体数据结构,图的存储方式",
+        "最小生成树,应用有,图,具体数据结构,算法应用",
+        "最短路径,应用有,图,具体数据结构,算法应用",
+        "有向无环图描述表达式,应用有,图,具体数据结构,算法应用",
+        "拓扑排序,应用有,图,具体数据结构,算法应用",
+        "关键路径,应用有,图,具体数据结构,算法应用",
+        "存储结构,包含,三要素,组成部分,组成部分",
+        "顺序结构,包含,存储结构,组成部分,数据结构存储方式",
+        "链式结构,包含,存储结构,组成部分,数据结构存储方式",
+        "索引结构,包含,存储结构,组成部分,数据结构存储方式",
+        "散列结构,包含,存储结构,组成部分,数据结构存储方式",
+        "数据的运算,包含,三要素,组成部分,操作定义",
+        "四类基本结构,包含,数据结构,概念,分类",
+        "集合,包含,四类基本结构,分类,具体数据结构",
+        "线性结构,包含,四类基本结构,分类,数据结构类型",
+        "树形结构,包含,四类基本结构,分类,数据结构类型",
+        "二叉树,包含,树形结构,数据结构类型,具体数据结构",
+        "每个结点至多只有两棵子树,定义,二叉树,具体数据结构,概念",
+        "顺序存储结构,包含,二叉树,具体数据结构,二叉树的存储方式",
+        "链式存储结构,包含,二叉树,具体数据结构,二叉树的存储方式",
+        "二叉树的遍历,包含,二叉树,具体数据结构,操作类型",
+        "先序遍历,包含,二叉树的遍历,操作类型,遍历方式",
+        "中序遍历,包含,二叉树的遍历,操作类型,遍历方式",
+        "后序遍历,包含,二叉树的遍历,操作类型,遍历方式",
+        "递归算法和非递归算法的转换,包含,二叉树的遍历,操作类型,算法",
+        "层次遍历,包含,二叉树的遍历,操作类型,遍历方式",
+        "有便利序列构造二叉树,包含,二叉树的遍历,操作类型,算法应用",
+        "线索二叉树,包含,二叉树,具体数据结构,特殊结构",
+        "以一定的规则将二叉树中的节点排列成一个线性排列成一个线性序列,定义,线索二叉树,特殊结构,概念",
+        "树和森林,包含,树形结构,数据结构类型,具体数据结构",
+        "网状结构,包含,四类基本结构,分类,数据结构类型",
+        "算法,支持,数据结构,概念,概念",
+        "对特定问题求解步骤的一种描述,定义,算法,概念,概念",
+        "五特性,包含,算法,概念,特性",
+        "有穷性,包含,五特性,特性,属性",
+        "确定性,包含,五特性,特性,属性",
+        "可行性,包含,五特性,特性,属性",
+        "输入,包含,五特性,特性,属性",
+        "输出,包含,五特性,特性,属性",
+        "四目标,包含,算法,概念,目标",
+        "正确性,包含,四目标,目标,标准",
+        "可读性,包含,四目标,目标,标准",
+        "健壮性,包含,四目标,目标,标准",
+        "高效率与低存储量需求,包含,四目标,目标,标准",
+        "算法效率的度量,包含,算法,概念,效率度量",
+        "时间复杂度,包含,算法效率的度量,效率度量,度量标准",
+        "空间复杂度,包含,算法效率的度量,效率度量,度量标准",
+        "顺序结构,包含,线性表,具体数据结构,数据结构存储方式",
+        "具有相同数据类型的n个数据元素的有限序列,定义,线性表,具体数据结构,概念",
+        "顺序表,包含,顺序结构,数据结构存储方式,具体实现",
+        "链式存储,包含,线性表,具体数据结构,数据结构存储方式",
+        "单链表,包含,链式存储,数据结构存储方式,链表类型",
+        "双链表,包含,链式存储,数据结构存储方式,链表类型",
+        "循环链表,包含,链式存储,数据结构存储方式,链表类型",
+        "静态链表,包含,链式存储,数据结构存储方式,链表类型",
+        "数组,实现方式,静态链表,链表类型,实现方式",
+        "指针,实现方式,单链表,链表类型,实现方式",
+        "指针,实现方式,双链表,链表类型,实现方式",
+        "指针,实现方式,循环链表,链表类型,实现方式",
+        "链式表示：单链表,表示方式,线性表,具体数据结构,表示方式",
+        "顺序表示：顺序表,表示方式,线性表,具体数据结构,表示方式",
+        "线性结构查找,分为,查找,操作类型,查找类型",
+        "树形结构查找,分为,查找,操作类型,查找类型",
+        "散列结构查找,分为,查找,操作类型,查找类型",
+        "平均查找长度,效率指标,查找,操作类型,效率指标"
+];
+
+        var id = 0;
+        var nodeDict = {};
+
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split(',');
+            var source = parts[0];
+            var target = parts[2];
+            var relation = parts[1];
+            var sourceCategory = parts[3];
+            var targetCategory = parts[4];
+            
+            if (!categories.some(function (item) { return item.name === sourceCategory })) {
+                categories.push({ name: sourceCategory });
+            }
+            if (!categories.some(function (item) { return item.name === targetCategory })) {
+                categories.push({ name: targetCategory });
+            }
+
+            if (!nodeDict.hasOwnProperty(source)) {
+                nodeDict[source] = id;
+                data.push({
+                    id: id++,
+                    name: source,
+                    category: sourceCategory,
+                });
+            }
+            
+            if (!nodeDict.hasOwnProperty(target)) {
+                nodeDict[target] = id;
+                data.push({
+                    id: id++,
+                    name: target,
+                    category: targetCategory,
+                });
+            }
+
+            links.push({
+                source: nodeDict[source],
+                target: nodeDict[target],
+                type: relation,
+            });
+        }
+
+        var itemStyle = {
+            normal: {
+                borderColor: '#fff',
+                borderWidth: 1,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+            }
+        };
+
+        var option = {
+            title: {
+                top: 'top',
+                left: 'center'
+            },
+            tooltip: {
+                show: true,
+                formatter: function(params) {
+                    if (params.dataType === 'node') {
+                        return params.data.name;
+                    } else if (params.dataType === 'edge') {
+                        return params.data.source.name + ' ' + params.data.type + ' ' + params.data.target.name;
+                    }
+                }
+            },
+            legend: [{
+                data: categories.map(function(category) { return category.name; })
+            }],
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                symbolSize: 25,
+                force: {
+                    repulsion: 100,
+                    edgeLength: 50,
+                    gravity: 0.2
+                },
+                data: data,
+                links: links,
+                categories: categories,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.name;
+                        }
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 1,
+                        curveness: 0
+                    }
+                },
+                edgeLabel: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.type;
+                        }
+                    }
+                },
+                itemStyle: itemStyle,
+                draggable: true,
+                edgeSymbol: ['arrow', 'none'],
+            }]
+        };
+
+        chart.setOption(option);
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var keyword = document.getElementById('keywords').value;
+
+            var nodes = chart.getOption().series[0].data;
+            var foundIndex = -1;
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].name === keyword) {
+                    foundIndex = i;
+                    break;
+                }
+            }
+
+            if (foundIndex !== -1) {
+                chart.dispatchAction({
+                    type: 'highlight',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'showTip',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'focusNodeAdjacency',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+            }
+
+            this.reset();
+        });
+    </script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>    
+</body>
+</html>

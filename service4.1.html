@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    /* 右侧区域样式 */
+    .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 200px;
+            padding: 50px;
+        }
+
+        .form {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+
+        /**/
+        #main {
+				margin-left: 200px;
+				padding: 20px;
+			}
+
+			#data-screen {
+				width: 100%;
+				height: 500px;
+				background-color: #f9f9f9;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			#data-screen h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+			}
+
+			@media (max-width: 768px) {
+
+				/* 在小屏幕下隐藏导航栏 */
+				#sidebar {
+					left: -200px;
+				}
+
+				#main {
+					margin-left: 0;
+				}
+			}
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+</style>
+</head>
+<body>  
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.16.0/dist/d3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+    <!-- 右侧内容区域 -->
+    <div class="container">
+        <!-- 搜索表单 -->
+        <form class="form">
+            <label for="keywords">关键词：</label>
+            <input type="text" id="keywords" name="keywords" placeholder="请输入关键词">
+            <label for="category">分类：</label>
+            <select id="category" name="category">
+                <option value="">全部</option>
+                <option value="概念">概念</option>
+                <option value="组成部分">组成部分</option>
+                <option value="类型">类型</option>
+                <option value="协议组">协议组</option>
+                <option value="协议">协议</option>
+                <option value="安全技术">安全技术</option>
+                <option value="设备">设备</option>
+                <option value="层次">层次</option>
+                <option value="协议层">协议层</option>
+                <option value="媒介">媒介</option>
+                <option value="应用">应用</option>
+                <option value="组织">组织</option>
+                <option value="模型分层">模型分层</option>
+                <option value="认证方式">认证方式</option>
+                <option value="网络服务">网络服务</option>
+                <option value="网络技术">网络技术</option>
+                <option value="协议特性">协议特性</option>
+                <option value="通信类型">通信类型</option>
+                <option value="网络性能">网络性能</option>
+                <option value="性能指标">性能指标</option>
+                <option value="管理">管理</option>
+                <option value="活动">活动</option>
+                <option value="网络应用">网络应用</option>
+                <option value="安全">安全</option>
+                <option value="优化技术">优化技术</option>
+                <option value="串行链路通信">串行链路通信</option>
+                <option value="高速数据传输">高速数据传输</option>
+                <option value="远程管理服务">远程管理服务</option>
+                <option value="资源定位">资源定位</option>
+                <option value="云计算服务">云计算服务</option>
+                <option value="标准指定">标准指定</option>
+                <option value="设备互联">设备互联</option>
+            </select>
+            <input type="submit" value="搜索">
+        </form>
+
+        <!-- 关系图容器 -->
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 获取搜索表单和关系图容器
+        var form = document.querySelector('.form');
+        var chart = echarts.init(document.getElementById('chart'));
+        var data = [];
+        var links = [];
+        var categories = [];
+
+        // 根据您的数据格式化和添加的内容
+        var lines = [   
+        "将地理位置不同的多台计算机通过通信线路连接起来的计算机系统,定义,计算机网络,概念,概念",
+        "网络拓扑,包含,计算机网络,组成部分,概念",
+        "星型拓扑,包含,网络拓扑,类型,组成部分",
+        "总线型拓扑,包含,网络拓扑,类型,组成部分",
+        "环形拓扑,包含,网络拓扑,类型,组成部分",
+        "协议,包含,计算机网络,组成部分,概念",
+        "为进行网络中的数据交换而定下的规则、标准或约定,定义,协议,概念,概念",
+        "TCP/IP,包含,协议,协议族,组成部分",
+        "传输控制协议,包含,TCP/IP,协议,协议",
+        "网络互连协议,包含,TCP/IP,协议,协议",
+        "设备,包含,计算机网络,组成部分,概念",
+        "路由器,包含,设备,类型,组成部分",
+        "交换机,包含,设备,类型,组成部分",
+        "中继器,包含,设备,类型,组成部分",
+        "网络服务,包含,计算机网络,组成部分,概念",
+        "电子邮件,包含,网络服务,类型,组成部分",
+        "文件传输,包含,网络服务,类型,组成部分",
+        "世界广域网,包含,网络服务,类型,组成部分",
+        "网络安全,包含,计算机网络,组成部分,概念",
+        "加密技术,包含,网络安全,安全技术,组成部分",
+        "防火墙,包含,网络安全,设备,组成部分",
+        "入侵检测系统,包含,网络安全,设备,组成部分",
+        "应用层,包含,网络协议,层次,协议",
+        "传输层,包含,网络协议,层次,协议",
+        "网络层,包含,网络协议,层次,协议",
+        "数据链路层,包含,网络协议,层次,协议",
+        "物理层,包含,网络协议,层次,协议",
+        "HTTP,包含,应用层,协议,协议层",
+        "FTP,包含,应用层,协议,协议层",
+        "SMTP,包含,应用层,协议,协议层",
+        "TCP,包含,传输层,协议,协议层",
+        "UDP,包含,传输层,协议,协议层",
+        "IP,包含,网络层,协议,协议层",
+        "Ethernet,包含,数据链路层,协议,协议层",
+        "PPP,包含,数据链路层,协议,协议层",
+        "光纤,包含,物理层,媒介,媒介",
+        "双绞线,包含,物理层,媒介,媒介",
+        "无线,包含,物理层,媒介,媒介",
+        "远程通信,支持,计算机网络,应用,概念",
+        "资源共享,支持,计算机网络,应用,概念",
+        "分布式处理,支持,计算机网络,应用,概念",
+        "数字签名,包含,网络安全,安全技术,组成部分",
+        "虚拟私人网络（VPN）,包含,网络安全,安全技术,组成部分",
+        "安全套接层（SSL）,包含,网络安全,协议,组成部分",
+        "传输层安全（TLS）,包含,网络安全,协议,组成部分",
+        "DNS,包含,应用层,协议,协议层",
+        "DHCP,包含,应用层,协议,协议层",
+        "SNMP,包含,应用层,协议,协议层",
+        "IPv6,包含,网络层,协议,协议层",
+        "ICMP,包含,网络层,协议,协议层",
+        "ARP,包含,网络层,协议,协议层",
+        "RIP,包含,网络层,协议,协议层",
+        "OSPF,包含,网络层,协议,协议层",
+        "BGP,包含,网络层,协议,协议层",
+        "ATM,包含,数据链路层,协议,协议层",
+        "帧中继（Frame Relay）,包含,数据链路层,协议,协议层",
+        "网桥,包含,设备,类型,组成部分",
+        "网关,包含,设备,类型,组成部分",
+        "网状拓扑,包含,网络拓扑,类型,组成部分",
+        "远程访问服务,包含,网络服务,类型,组成部分",
+        "虚拟网络计算（VNC）,包含,网络服务,类型,组成部分",
+        "云计算服务,包含,网络服务,类型,组成部分",
+        "会话层,包含,网络协议,层次,协议层",
+        "表示层,包含,网络协议,层次,协议层",
+        "管理用户会话和控制传输层连接,功能,会话层,概念,协议层",
+        "数据格式转换、数据加密,功能,表示层,概念,协议层",
+        "同轴电缆,包含,物理层,媒介,媒介",
+        "模拟与数字应用,包含,物理层,类型,媒介",
+        "OSI七层模型,包含,网络模型,类型,概念",
+        "TCP/IP四层模型,包含,网络模型,类型,概念",
+        "国际电信联盟（ITU）,包含,网络标准化组织,类型,组织",
+        "国际标准化组织（ISO）,包含,网络标准化组织,类型,组织",
+        "互联网工程任务组（IETF）,包含,网络标准化组织,类型,组织",
+        "对等网络（P2P）,包含,计算机网络,类型,概念",
+        "应用网络（CDN）,包含,计算机网络,类型,概念",
+        "远程教育,应用,计算机网络,类型,概念",
+        "电子商务,应用,计算机网络,类型,概念",
+        "五层互联网模型,包含,网络模型,类型,概念",
+        "应用层,包含,五层互联网模型,层次,模型分层",
+        "传输层,包含,五层互联网模型,层次,模型分层",
+        "网络层,包含,五层互联网模型,层次,模型分层",
+        "数据链路层,包含,五层互联网模型,层次,模型分层",
+        "物理层,包含,五层互联网模型,层次,模型分层",
+        "传输控制协议（TCP）,包含,传输层,协议,协议层",
+        "用户数据报协议（UDP）,包含,传输层,协议,协议层",
+        "互联网协议（IP）,包含,网络层,协议,协议层",
+        "超文本传输协议（HTTP）,包含,应用层,协议,协议层",
+        "安全超文本传输协议（HTTPS）,包含,应用层,协议,协议层",
+        "简单邮件传输协议（SMTP）,包含,应用层,协议,协议层",
+        "邮局协议（POP3）,包含,应用层,协议,协议层",
+        "网络新闻传输协议（NNTP）,包含,应用层,协议,协议层",
+        "对称加密,包含,网络安全,类型,安全技术",
+        "非对称加密,包含,网络安全,类型,安全技术",
+        "哈希函数,包含,网络安全,类型,安全技术",
+        "数字证书,包含,网络安全,认证方式,安全技术",
+        "无线接入点（AP）,包含,设备,设备,类型",
+        "调制解调器,包含,设备,设备,类型",
+        "树形拓扑,包含,网络拓扑,类型,组成部分",
+        "域名系统（DNS）,包含,网络服务,网络服务,类型",
+        "动态主机配置协议（DHCP）,包含,网络服务,网络服务,类型",
+        "网络时间协议（NTP）,包含,网络服务,网络服务,类型",
+        "入侵防御系统（IDS）,包含,网络安全,设备,组成部分",
+        "入侵防御系统（IPS）,包含,网络安全,设备,组成部分",
+        "子网划分,包含,网络层,网络技术,类型",
+        "网络地址转换（NAT）,包含,网络层,网络技术,类型",
+        "虚拟专用网络（VPN）,包含,网络层,网络技术,类型",
+        "多播,包含,网络协议,类型,协议特性",
+        "广播,包含,网络协议,通信类型,协议特性",
+        "带宽,包含,网络性能,网络性能,性能指标",
+        "延迟,包含,网络性能,网络性能,性能指标",
+        "丢包率,包含,网络性能,网络性能,性能指标",
+        "吞吐量,包含,网络性能,网络性能,性能指标",
+        "网络性能,包含,计算机网络,性能指标,概念",
+        "故障管理,管理,计算机网络,管理,活动",
+        "配置管理,管理,计算机网络,管理,活动",
+        "账号管理,管理,计算机网络,管理,活动",
+        "性能管理,管理,计算机网络,管理,活动",
+        "安全管理,管理,计算机网络,管理,活动",
+        "远程工作,包含,网络应用,网络应用,类型",
+        "在线学习,包含,网络应用,网络应用,类型",
+        "社交网络,包含,网络应用,网络应用,类型",
+        "在线视频会议,包含,网络应用,网络应用,类型",
+        "网络应用,包含,计算机网络,网络应用,概念",
+        "安全外壳（SSH）,包含,网络安全,安全,协议",
+        "安全电子交易（SET）,包含,网络安全,安全,协议",
+        "多协议标签交换（MPLS）,包含,网络层,网络技术,类型",
+        "软件定义网络（SDN）,包含,网络层,网络技术,类型",
+        "网络功能虚拟化（NFV）,包含,网络层,管理,类型",
+        "流控制,包含,传输层,管理,类型",
+        "拥塞控制,包含,传输层,优化技术,类型",
+        "媒体访问控制（MAC）,包含,数据链路层,管理,类型",
+        "点对点协议（PPP）,包含,数据链路层,串行链路通信,协议",
+        "调制解调技术,包含,物理层,应用,类型",
+        "光纤通信技术,包含,物理层,高速数据传输,类型",
+        "远程终端访问（Telnet）,包含,应用层,远程管理服务,类型",
+        "文件传输协议（FTP）,包含,应用层,网络服务,类型",
+        "简单管理协议（SNMP）,包含,应用层,管理,类型",
+        "统一资源定位器（URL）,包含,应用层,资源定位,类型",
+        "内容交付网络（CDN）,包含,网络服务,应用,类型",
+        "云服务模型,包含,网络服务,云计算服务,类型",
+        "安全信息与事件管理（SIEM）,包含,网络安全,安全,安全",
+        "入侵检测与防御系统（IDPS）,包含,网络安全,安全技术,类型",
+        "负载均衡,包含,网络性能,应用,优化技术",
+        "数据压缩,包含,网络性能,优化技术,优化技术",
+        "网络监控工具,管理,计算机网络,优化技术,管理",
+        "配置管理,管理,计算机网络,概念,管理",
+        "服务质量（QoS）,包含,网络协议,优化技术,协议特性",
+        "无线电技术委员会（IEEE）,包含,网络标准化组织,标准制定,组织",
+        "Wi-Fi联盟,包含,网络标准化组织,标准制定,组织",
+        "物联网（IoT）,包含,网络应用,设备互联,类型",
+        "大数据分析,包含,网络应用,应用,类型",
+        "人工智能（AI）,包含,网络应用,优化技术,类型",
+        "区块链技术,包含,网络应用,应用,类型",
+        "网络标准化组织,组织,计算机网络,组织,概念",
+        "五层互联网模型,包含,计算机网络,模型分层,概念"
+        ]
+        
+        var id = 0;
+        var nodeDict = {};
+
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split(',');
+            var source = parts[0];
+            var target = parts[2];
+            var relation = parts[1];
+            var sourceCategory = parts[3];
+            var targetCategory = parts[4];
+            
+            if (!categories.some(function (item) { return item.name === sourceCategory })) {
+                categories.push({ name: sourceCategory });
+            }
+            if (!categories.some(function (item) { return item.name === targetCategory })) {
+                categories.push({ name: targetCategory });
+            }
+
+            if (!nodeDict.hasOwnProperty(source)) {
+                nodeDict[source] = id;
+                data.push({
+                    id: id++,
+                    name: source,
+                    category: sourceCategory,
+                });
+            }
+            
+            if (!nodeDict.hasOwnProperty(target)) {
+                nodeDict[target] = id;
+                data.push({
+                    id: id++,
+                    name: target,
+                    category: targetCategory,
+                });
+            }
+
+            links.push({
+                source: nodeDict[source],
+                target: nodeDict[target],
+                type: relation,
+            });
+        }
+
+        var itemStyle = {
+            normal: {
+                borderColor: '#fff',
+                borderWidth: 1,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+            }
+        };
+
+        var option = {
+            title: {
+                top: 'top',
+                left: 'center'
+            },
+            tooltip: {
+                show: true,
+                formatter: function(params) {
+                    if (params.dataType === 'node') {
+                        return params.data.name;
+                    } else if (params.dataType === 'edge') {
+                        return params.data.source.name + ' ' + params.data.type + ' ' + params.data.target.name;
+                    }
+                }
+            },
+            legend: [{
+                data: categories.map(function(category) { return category.name; })
+            }],
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                symbolSize: 25,
+                force: {
+                    repulsion: 100,
+                    edgeLength: 50,
+                    gravity: 0.2
+                },
+                data: data,
+                links: links,
+                categories: categories,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.name;
+                        }
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 1,
+                        curveness: 0
+                    }
+                },
+                edgeLabel: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.type;
+                        }
+                    }
+                },
+                itemStyle: itemStyle,
+                draggable: true,
+                edgeSymbol: ['arrow', 'none'],
+            }]
+        };
+
+        chart.setOption(option);
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var keyword = document.getElementById('keywords').value;
+
+            var nodes = chart.getOption().series[0].data;
+            var foundIndex = -1;
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].name === keyword) {
+                    foundIndex = i;
+                    break;
+                }
+            }
+
+            if (foundIndex !== -1) {
+                chart.dispatchAction({
+                    type: 'highlight',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'showTip',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'focusNodeAdjacency',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+            }
+
+            this.reset();
+        });
+    </script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+</body>
+</html>

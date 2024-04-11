@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    .title {
+			display: flex;
+			flex-direction: column;
+			margin-left: 215px;
+		}
+        .container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-left: 200px;
+			padding: 50px;
+		}
+</style>
+</head>
+<body>  
+<!-- 引入wordcloud2.min.js文件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+	<!-- 右侧内容区域 -->
+	<h1 class="title">词云-【计算机操作系统】</h1>
+	<div class="container">
+    <!-- 创建一个canvas元素用于绘制词云图 -->
+		<canvas id="my_canvas" width="800" height="600"></canvas>
+	</div>
+    <script>
+        // 定义一个数组，包含中药相关的词语和权重
+        var list = [
+    ['进程与线程管理', 100],
+    ['进程调度策略', 80],
+    ['线程同步机制', 70],
+    ['死锁的预防与避免', 60],
+    ['内存管理策略', 50],
+    ['虚拟内存与分页', 40],
+    ['文件系统的组织', 30],
+    ['I/O 系统管理', 20],
+    ['设备驱动与中断', 10],
+    ['系统安全与保护', 5],
+    ['操作系统结构', 100],
+    ['内核模式与用户模式', 80],
+    ['存储器层次结构', 70],
+    ['缓存管理', 60],
+    ['分段和分页', 50],
+    ['系统调用和API', 40],
+    ['多处理器系统', 30],
+    ['实时操作系统特性', 20],
+    ['分布式操作系统', 10],
+    ['微内核设计', 5],
+    ['容错性与恢复策略', 100],
+    ['性能评估与优化', 80],
+    ['操作系统虚拟化', 70],
+    ['云操作系统', 60],
+    ['操作系统的更新与维护', 50],
+    ['安全漏洞与防护机制', 40],
+    ['权限控制与访问管理', 30],
+    ['日志文件与审计跟踪', 20],
+    ['网络通信协议', 10],
+    ['用户界面与交互设计', 5],
+    ['加密技术与数据保护', 100],
+    ['系统启动与关机过程', 80],
+    ['硬件抽象层', 70],
+    ['操作系统国际化支持', 60],
+    ['环境变量与系统配置', 50],
+    ['脚本编程与自动化任务', 40],
+    ['故障诊断与问题解决', 30],
+    ['开源操作系统分析', 20],
+    ['嵌入式操作系统设计', 10],
+    ['操作系统教学与研究方向', 5]
+];
+
+        // 调用WordCloud函数，传入canvas元素和配置选项
+        WordCloud(document.getElementById('my_canvas'), {
+            list: list, // 使用定义的数组作为数据源
+            fontFamily: '微软雅黑', // 设置字体
+            color: 'random-dark', // 设置颜色为随机深色
+            shape: 'circle', // 设置形状为圆形
+            gridSize:20, // 设置网格大小为10像素
+            weightFactor:0.8// 设置权重因子为3
+        });
+    </script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+</body>
+</html>

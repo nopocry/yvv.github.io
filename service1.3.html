@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    /* 右侧区域样式 */
+    .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 200px;
+            padding: 50px;
+        }
+
+        .form {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+
+        /**/
+        #main {
+				margin-left: 200px;
+				padding: 20px;
+			}
+
+			#data-screen {
+				width: 100%;
+				height: 500px;
+				background-color: #f9f9f9;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			#data-screen h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+			}
+
+			@media (max-width: 768px) {
+
+				/* 在小屏幕下隐藏导航栏 */
+				#sidebar {
+					left: -200px;
+				}
+
+				#main {
+					margin-left: 0;
+				}
+			}
+
+			#chart,
+			#chart1,
+			#chart2,
+			#chart3{
+				width: 300px;
+				height: 400px;
+			}
+</style>
+</head>
+<body>  
+<!-- 引入 ECharts 库 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+
+<!-- ------------------------- 数据大屏 1 -------------------------- -->
+<div id="main">
+    <div id="data-screen">
+        <h2>知识点分析</h2>
+        <div style="display: flex;">
+            <div id="chart" style="width: 400%;"></div>
+            <div id="chart1" style="width: 300%;"></div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------- 数据大屏 2 -------------------------- -->
+<div id="main">
+    <div id="data-screen">
+        <h2>计算机操作系统书籍分析</h2>
+        <div style="display: flex;">
+            <div id="chart2" style="width: 100%;"></div>
+            <div id="chart3" style="width: 100%;"></div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------- 折线图 1 -------------------------- -->
+<script>
+// 初始化 ECharts 实例
+var myChart = echarts.init(document.getElementById('chart'));
+
+// 配置项
+var option = {
+title: {
+text: '知识点类型'
+},
+tooltip: {},
+xAxis: {
+type: 'category',
+data: [
+"进程管理",
+"线程与并发",
+"进程同步",
+"死锁",
+"内存管理",
+"虚拟内存",
+"文件系统",
+"输入/输出系统",
+"设备驱动",
+"系统调用与API",
+"进程调度算法",
+"内存分页",
+"内存分段",
+"文件系统结构",
+"存储管理",
+"安全与权限管理",
+"网络通信协议"
+],
+
+axisLabel: {
+interval: 0, //强制显示所有标签
+rotate: -30, //标签旋转角度
+margin: 8 //标签与轴线之间的距离
+}
+},
+yAxis: {
+type: 'value',
+data: [0, 5, 10, 15, 20, 25, 30]
+},
+series: [{
+name: '销量',
+type: 'line',
+data: [7, 6, 3, 4, 8, 10, 9, 6, 2, 29, 9, 13, 18, 30, 20, 15, 1]
+}]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>
+<!-- ------------------------- 折线图图 1 结束-------------------------- -->
+
+<!-- ------------------------- 环状图 ----------  ---------------- -->
+<script>
+// 初始化 ECharts 实例
+var myChart = echarts.init(document.getElementById('chart1'));
+
+// 配置项
+var option = {
+title: {
+text: ''
+},
+tooltip: {
+trigger: 'item',
+formatter: '{a} <br/>{b}: {c} ({d}%)'
+},
+series: [
+{
+name: '知识点类型',
+type: 'pie',
+radius: ['50%', '70%'],
+avoidLabelOverlap: false,
+label: {
+  show: false,
+  position: 'center'
+},
+emphasis: {
+  label: {
+    show: true,
+    fontSize: '30',
+    fontWeight: 'bold'
+  }
+},
+labelLine: {
+  show: false
+},
+data: [
+{"value": 29, "name": "进程管理"},
+{"value": 30, "name": "线程与并发"},
+{"value": 20, "name": "进程同步"},
+{"value": 18, "name": "死锁处理"},
+{"value": 15, "name": "内存管理"},
+{"value": 13, "name": "虚拟内存"},
+{"value": 10, "name": "文件系统实现"},
+{"value": 9, "name": "输入/输出系统"},
+{"value": 8, "name": "设备管理"},
+{"value": 7, "name": "系统调用与API"},
+{"value": 6, "name": "进程调度算法"},
+{"value": 6, "name": "内存分页"},
+{"value": 4, "name": "内存分段"},
+{"value": 3, "name": "文件系统结构与索引"},
+{"value": 2, "name": "存储管理技术"},
+{"value": 1, "name": "安全与权限管理"},
+{"value": 1, "name": "网络通信与协议"}
+]
+
+
+}
+]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>
+<!-- ------------------------- 环状图 结束----------  ---------------- -->
+<script>
+// 初始化 ECharts 实例
+var myChart = echarts.init(document.getElementById('chart2'));
+
+// 配置项
+var option = {
+title: {
+text: ''
+},
+tooltip: {},
+xAxis: {
+data: [
+"《现代操作系统》",
+"《操作系统概念》",
+"《操作系统：精髓与设计原理》",
+"《UNIX操作系统设计》",
+"《Linux内核设计与实现》",
+"《Windows内核原理》",
+"《操作系统设计与实现》",
+"《深入理解计算机系统》",
+"《Linux程序设计》"
+],
+
+axisLabel: {
+interval: 0, //强制显示所有标签
+rotate: -30, //标签旋转角度
+margin: 8 //标签与轴线之间的距离
+}
+},
+yAxis: {
+type: 'value',
+data: [0, 0.2, 0.4, 0.6, 0.8, 1]
+},
+series: [{
+name: '数据',
+type: 'bar',
+itemStyle: {
+normal: {
+  color: function(params) {
+    var colorList = ['#C1232B','#B5C334','#FCCE10','#E87C25','#27727B','#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD'];
+    return colorList[params.dataIndex];
+  }
+}
+},
+data: [1, 0.8, 0.95, 0.4, 0.1, 0.8, 0.5, 0.4, 0.3]
+}]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>
+
+<script>
+// 初始化 ECharts 实例
+var myChart = echarts.init(document.getElementById('chart3'));
+
+// 配置项
+var option = {
+title: {
+text: '',
+left: 'center'
+},
+tooltip: {
+trigger: 'item',
+formatter: '{b}：{c} ({d}%)'
+},
+legend: {
+orient: 'vertical',
+left: 'left',
+data: ['《三因极-病症方论》', '《东垣试效方》', '《黄帝素问宣明论》', '《丹溪心法附余》', '《仙授理伤续断秘方》', '《韩氏医通》', '《伤寒直格》', '《霍乱论》', '《闫氏小儿方论》']
+},
+series: [
+{
+name: '数据',
+type: 'pie',
+radius: '50%',
+center: ['50%', '60%'],
+itemStyle: {
+  normal: {
+    label: {
+      show: true,
+      position: 'outside',
+      formatter: '{b}'
+    },
+    labelLine: {
+      show: true
+    }
+  }
+},
+data: [
+{value: 10, name: '《现代操作系统》', itemStyle: {color: '#C1232B'}},
+{value: 9, name: '《操作系统概念》', itemStyle: {color: '#B5C334'}},
+{value: 8, name: '《操作系统：精髓与设计原理》', itemStyle: {color: '#FCCE10'}},
+{value: 7, name: '《深入理解计算机系统》', itemStyle: {color: '#E87C25'}},
+{value: 6, name: '《UNIX环境高级编程》', itemStyle: {color: '#27727B'}},
+{value: 5, name: '《Linux内核设计与实现》', itemStyle: {color: '#FE8463'}},
+{value: 4, name: '《操作系统设计与实现》', itemStyle: {color: '#9BCA63'}},
+{value: 3, name: '《Linux程序设计》', itemStyle: {color: '#FAD860'}},
+{value: 2, name: '《Windows内核原理》', itemStyle: {color: '#F3A43B'}}
+]
+}
+]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

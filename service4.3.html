@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    /* 右侧区域样式 */
+    .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 200px;
+            padding: 50px;
+        }
+
+        .form {
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+
+        /**/
+        #main {
+				margin-left: 200px;
+				padding: 20px;
+			}
+
+			#data-screen {
+				width: 100%;
+				height: 500px;
+				background-color: #f9f9f9;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+			}
+
+			#data-screen h2 {
+				margin-top: 0;
+				margin-bottom: 10px;
+			}
+
+			@media (max-width: 768px) {
+
+				/* 在小屏幕下隐藏导航栏 */
+				#sidebar {
+					left: -200px;
+				}
+
+				#main {
+					margin-left: 0;
+				}
+			}
+
+        /* 关系图容器样式 */
+        .chart {
+            width: 1000px;
+            height: 800px;
+            margin-top: 50px;
+        }
+</style>
+</head>
+<body>  
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.16.0/dist/d3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+    <!-- 右侧内容区域 -->
+    <div class="container">
+        <!-- 搜索表单 -->
+        <form class="form">
+            <label for="keywords">关键词：</label>
+            <input type="text" id="keywords" name="keywords" placeholder="请输入关键词">
+            <label for="category">分类：</label>
+            <select id="category" name="category">
+                <option value="系统">系统</option>
+                <option value="概念">概念</option>
+                <option value="组成部分">组成部分</option>
+                <option value="功能">功能</option>
+                <option value="机制">机制</option>
+                <option value="策略">策略</option>
+                <option value="技术">技术</option>
+                <option value="特性">特性</option>
+                <option value="类型">类型</option>
+                <option value="接口">接口</option>
+                <option value="存储设备">存储设备</option>
+                <option value="服务">服务</option>
+                <option value="分类">分类</option>
+                <option value="实例">实例</option>
+                <option value="性能">性能</option>
+                <option value="评价指标">评价指标</option>
+                <option value="实现策略">实现策略</option>
+                <option value="历史背景">历史背景</option>
+                <option value="发展">发展</option>
+                <option value="管理">管理</option>
+                <option value="系统架构">系统架构</option>
+                <option value="事件响应">事件响应</option>
+                <option value="提高性能">提高性能</option>
+                <option value="硬件抽象">硬件抽象</option>
+                <option value="安全">安全</option>
+                <option value="数据一致性">数据一致性</option>
+                <option value="控制">控制</option>
+                <option value="自动配置">自动配置</option>
+                <option value="存储限制">存储限制</option>
+                <option value="数据交换">数据交换</option>
+                <option value="异步通信">异步通信</option>
+                <option value="任务分配">任务分配</option>
+                <option value="资源共享">资源共享</option>
+                <option value="权限">权限</option>
+                <option value="资源隔离">资源隔离</option>
+                <option value="系统监控">系统监控</option>
+                <option value="优化建议">优化建议</option>
+                <option value="支持">支持</option>
+                <option value="创新驱动">创新驱动</option>
+                <option value="组件">组件</option>
+            </select>
+            <input type="submit" value="搜索">
+        </form>
+
+        <!-- 关系图容器 -->
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 获取搜索表单和关系图容器
+        var form = document.querySelector('.form');
+        var chart = echarts.init(document.getElementById('chart'));
+        var data = [];
+        var links = [];
+        var categories = [];
+
+        // 根据您的数据格式化和添加的内容
+        var lines = [
+        "管理和协调计算机硬件与软件资源,定义,操作系统,概念,概念",
+        "核心组件,包含,操作系统,概念,组成部分",
+        "进程管理,包含,核心组件,组成部分,功能",
+        "调度算法,包含,进程管理,机制,策略",
+        "进程调度,实现,调度算法,策略,机制",
+        "内存管理,包含,核心组件,组成部分,功能",
+        "虚拟内存,包含,内存管理,技术,概念",
+        "分页和分段,实现,虚拟内存,技术,机制",
+        "文件系统,包含,核心组件,组成部分,功能",
+        "文件权限和控制,实现,文件系统,策略,机制",
+        "输入输出管理,包含,核心组件,组成部分,功能",
+        "设备驱动程序和中断处理,实现,输入输出管理,策略,机制",
+        "安全性和保护机制,包含,核心组件,组成部分,功能",
+        "用户身份验证和控制,实现,安全性和保护机制,策略,机制",
+        "多任务和多用户,特性,操作系统,特性,特性",
+        "并发性和同步,特性,操作系统,特性,特性",
+        "用户接口,包含,操作系统,概念,组成部分",
+        "图形用户界面(GUI)和命令行界面(CLI),实现,用户接口,类型,机制",
+        "系统调用和API,提供,操作系统,接口,概念",
+        "存储结构,包含,核心组件,组成部分,组成部分",
+        "硬盘和RAM,包含,存储结构,存储设备,组成部分",
+        "文件系统结构,实现,存储结构,组成部分,机制",
+        "操作系统服务,包含,操作系统,概念,功能",
+        "进程创建和管理,服务,操作系统服务,服务,类型",
+        "内存分配和管理,服务,操作系统服务,服务,类型",
+        "文件操作和管理,服务,操作系统服务,服务,类型",
+        "设备管理,服务,操作系统服务,服务,类型",
+        "安全和保护,服务,操作系统服务,服务,类型",
+        "网络通信,服务,操作系统服务,服务,类型",
+        "错误检测和处理,服务,操作系统服务,服务,类型",
+        "操作系统类型,包含,操作系统,分类,分类",
+        "批处理操作系统,包含,操作系统类型,分类,类型",
+        "分时操作系统,包含,操作系统类型,分类,类型",
+        "实时操作系统,包含,操作系统类型,分类,类型",
+        "分布式操作系统,包含,操作系统类型,分类,类型",
+        "嵌入式操作系统,包含,操作系统类型,分类,类型",
+        "开源和专有操作系统,包含,操作系统,类型,分类",
+        "Linux和Windows,实例,开源和专有操作系统,实例,实例",
+        "系统评估,包含,操作系统,概念,性能",
+        "时间复杂度和空间复杂度,评估,系统评估,性能,评价指标",
+        "系统策略,包含,操作系统,概念,策略",
+        "加密和防火墙,实现,系统策略,机制,实现策略",
+        "操作系统发展历史,涵盖,操作系统,概念,历史背景",
+        "从批处理到云计算,发展,操作系统发展历史,发展,发展",
+        "虚拟化技术,使能,操作系统,管理,技术",
+        "操作系统内核,核心,操作系统,系统架构,组成部分",
+        "中断驱动,机制,操作系统核心功能,事件响应,策略",
+        "并行计算,支持,操作系统功能,提高性能,特性",
+        "内存管理单元(MMU),组件,操作系统,硬件抽象,功能",
+        "设备管理与抽象,管理,操作系统核心组件,接口,功能",
+        "文件系统加密,提供,文件系统,安全,技术",
+        "日志文件系统,实现,管理,数据一致性,技术",
+        "负载均衡,优化,多任务处理,系统,策略",
+        "权限控制列表(ACL),应用,机制,控制,机制",
+        "硬链接与软链接,特性,文件系统,管理,技术",
+        "动态主机配置协议(DHCP),服务,网络通信,自动配置,类型",
+        "虚拟私人网络(VPN),支持,服务,安全,类型",
+        "磁盘配额系统,管理,文件系统,存储限制,策略",
+        "进程间通信(IPC),机制,操作系统服务,数据交换,类型",
+        "信号与槽机制,实现,事件处理,异步通信,策略",
+        "作业调度,部分,进程管理,任务分配,策略",
+        "存储器层次结构,组织,内存管理,性能,概念",
+        "分布式文件系统,支持,文件系统类型,资源共享,类型",
+        "操作系统更新策略,管理,操作系统维护,控制,服务",
+        "内核模式与用户模式,区分,操作系统安全,权限,概念",
+        "系统调用接口,提供,用户接口,控制,接口",
+        "文件访问模型,定义,文件系统,管理,概念",
+        "硬件虚拟化支持,使能,操作系统,资源隔离,技术",
+        "操作系统故障恢复,提供,服务,系统,类型",
+        "监控与日志分析,服务,操作系统服务,系统监控,类型",
+        "系统调优,服务,系统评估,优化建议,类型",
+        "操作系统安全漏洞,关注,操作系统发展,安全,历史背景",
+        "从单核到多核处理器,适应,操作系统发展,发展,发展",
+        "云操作系统,示例,操作系统类型,支持,类型",
+        "嵌入式系统特有需求,特化,嵌入式操作系统,权限,特性",
+        "操作系统国际化支持,提供,用户接口,支持,特性",
+        "开源社区贡献,推动,操作系统发展,创新驱动,发展",
+        "管理,服务,操作系统服务,管理,类型",
+        "操作系统核心功能,包含,操作系统,功能,技术",
+        "操作系统发展,包含,操作系统,发展,技术",
+        "服务,包含,系统支持与服务,服务,服务",
+        "服务,包含,系统支持与服务,服务,服务",
+        "容器与微服务,包含,系统支持与服务,服务,服务",
+        "机制,包含,操作系统功能,服务,服务",
+        "事件处理,包含,操作系统功能,服务,服务",
+        "多任务处理,包含,操作系统功能,服务,服务",
+        "系统支持与服务,包含,操作系统,服务,服务",
+        "操作系统功能,包含,操作系统,服务,服务",
+        "操作系统维护,包含,操作系统,服务,服务",
+        "操作系统安全,包含,操作系统,服务,服务",
+        "操作系统核心组件,包含,操作系统,组件,服务",
+        "文件系统类型,包含,操作系统类型,类型,服务",
+];
+
+        var id = 0;
+        var nodeDict = {};
+
+        for (var i = 0; i < lines.length; i++) {
+            var parts = lines[i].split(',');
+            var source = parts[0];
+            var target = parts[2];
+            var relation = parts[1];
+            var sourceCategory = parts[3];
+            var targetCategory = parts[4];
+            
+            if (!categories.some(function (item) { return item.name === sourceCategory })) {
+                categories.push({ name: sourceCategory });
+            }
+            if (!categories.some(function (item) { return item.name === targetCategory })) {
+                categories.push({ name: targetCategory });
+            }
+
+            if (!nodeDict.hasOwnProperty(source)) {
+                nodeDict[source] = id;
+                data.push({
+                    id: id++,
+                    name: source,
+                    category: sourceCategory,
+                });
+            }
+            
+            if (!nodeDict.hasOwnProperty(target)) {
+                nodeDict[target] = id;
+                data.push({
+                    id: id++,
+                    name: target,
+                    category: targetCategory,
+                });
+            }
+
+            links.push({
+                source: nodeDict[source],
+                target: nodeDict[target],
+                type: relation,
+            });
+        }
+
+        var itemStyle = {
+            normal: {
+                borderColor: '#fff',
+                borderWidth: 1,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+            }
+        };
+
+        var option = {
+            title: {
+                top: 'top',
+                left: 'center'
+            },
+            tooltip: {
+                show: true,
+                formatter: function(params) {
+                    if (params.dataType === 'node') {
+                        return params.data.name;
+                    } else if (params.dataType === 'edge') {
+                        return params.data.source.name + ' ' + params.data.type + ' ' + params.data.target.name;
+                    }
+                }
+            },
+            legend: [{
+                data: categories.map(function(category) { return category.name; })
+            }],
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                symbolSize: 25,
+                force: {
+                    repulsion: 100,
+                    edgeLength: 50,
+                    gravity: 0.2
+                },
+                data: data,
+                links: links,
+                categories: categories,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.name;
+                        }
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 1,
+                        curveness: 0
+                    }
+                },
+                edgeLabel: {
+                    normal: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.data.type;
+                        }
+                    }
+                },
+                itemStyle: itemStyle,
+                draggable: true,
+                edgeSymbol: ['arrow', 'none'],
+            }]
+        };
+
+        chart.setOption(option);
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var keyword = document.getElementById('keywords').value;
+
+            var nodes = chart.getOption().series[0].data;
+            var foundIndex = -1;
+            for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].name === keyword) {
+                    foundIndex = i;
+                    break;
+                }
+            }
+
+            if (foundIndex !== -1) {
+                chart.dispatchAction({
+                    type: 'highlight',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'showTip',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+
+                chart.dispatchAction({
+                    type: 'focusNodeAdjacency',
+                    seriesIndex: 0,
+                    dataIndex: foundIndex
+                });
+            }
+
+            this.reset();
+        });
+    </script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+    .title {
+			display: flex;
+			flex-direction: column;
+			margin-left: 215px;
+		}
+        .container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-left: 200px;
+			padding: 50px;
+		}
+</style>
+</head>
+<body>  
+<!-- 引入wordcloud2.min.js文件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+	<!-- 右侧内容区域 -->
+	<h1 class="title">词云-【数据结构】</h1>
+	<div class="container">
+    <!-- 创建一个canvas元素用于绘制词云图 -->
+		<canvas id="my_canvas" width="800" height="600"></canvas>
+	</div>
+    <script>
+        // 定义一个数组，包含数据结构相关的词语和权重
+        var list = [
+    ['数组', 100],
+    ['链表', 98],
+    ['栈', 96],
+    ['队列', 94],
+    ['哈希表', 92],
+    ['二叉树', 90],
+    ['红黑树', 88],
+    ['AVL树', 86],
+    ['B树', 84],
+    ['B+树', 82],
+    ['堆', 80],
+    ['图', 78],
+    ['深度优先搜索', 76],
+    ['广度优先搜索', 74],
+    ['动态规划', 72],
+    ['贪心算法', 70],
+    ['分治算法', 68],
+    ['回溯算法', 66],
+    ['排序算法', 64],
+    ['搜索算法', 62],
+    ['散列表', 60],
+    ['前缀树 (Trie)', 58],
+    ['并查集', 56],
+    ['斐波那契堆', 54],
+    ['图的遍历', 52],
+    ['最短路径算法', 50],
+    ['最小生成树算法', 48],
+    ['网络流算法', 46],
+    ['字符串匹配算法', 44],
+    ['几何算法', 42],
+    ['数论算法', 40],
+    ['概率算法', 38],
+    ['线段树', 36],
+    ['树状数组', 34],
+    ['莫队算法', 32],
+    ['后缀数组', 30],
+    ['后缀树', 28],
+    ['位运算', 26],
+    ['滑动窗口', 24],
+    ['双指针技巧', 22],
+    ['并发数据结构', 20],
+    ['持久化数据结构', 18],
+    ['脚本算法', 16],
+    ['模拟退火算法', 14],
+    ['遗传算法', 12],
+    ['机器学习算法基础', 10],
+    ['图像处理算法', 8],
+    ['密码学算法', 6],
+    ['区块链技术基础', 4],
+    ['量子计算基础', 2]
+];
+
+        // 调用WordCloud函数，传入canvas元素和配置选项
+        WordCloud(document.getElementById('my_canvas'), {
+            list: list, // 使用定义的数组作为数据源
+            fontFamily: '微软雅黑', // 设置字体
+            color: 'random-dark', // 设置颜色为随机深色
+            shape: 'circle', // 设置形状为圆形
+            gridSize:20, // 设置网格大小为10像素
+            weightFactor:0.8// 设置权重因子为3
+        });
+    </script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>基于计算机学科专业基础综合（408）的数据分析系统-登录</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-image: url("img/0.jpg"); 
+			background-size: cover;
+			background-position: center;
+			font-family: Arial, sans-serif;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			background-color: rgba(255, 255, 255, 0.5);
+		}
+
+		h1 {
+			font-weight: bold;
+			font-size: 3rem;
+			margin-bottom: 30px;
+			color: #333;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 30px;
+			background-color: #fff;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		input[type="text"], input[type="password"] {
+			width: 100%;
+			padding: 15px;
+			margin: 10px 0;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			font-size: 1.2rem;
+		}
+
+		input[type="submit"] {
+			background-color: #2ecc71;
+			color: #fff;
+			padding: 15px;
+			border: none;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			font-size: 1.2rem;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #27ae60;
+		}
+	</style>
+    <script>
+        function validateAndRedirect(event) {
+            // 阻止表单默认提交行为
+            event.preventDefault();
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username === "yvv" && password === "123") {
+                // 如果用户名和密码匹配，则重定向到1.html
+                window.location.href = '1.html';
+            } else {
+                alert("无效的用户名或密码！");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>基于计算机学科专业基础综合（408）的数据分析系统</h1>
+        <!-- 在表单的 onsubmit 事件处理程序中调用 validateAndRedirect 函数 -->
+        <form onsubmit="validateAndRedirect(event)">
+            <input type="text" placeholder="用户名" id="username" name="username">
+            <input type="password" placeholder="密码" id="password" name="password">
+            <input type="submit" value="登录">
+        </form>
+    </div>
+</body>
+</html>

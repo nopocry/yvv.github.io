@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识图谱</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- 添加 Font Awesome 图标库 -->
+<style>
+    /* CSS代码 */
+    body {
+        font-family: "Lato", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+        transition: width 0.5s; /* 添加过渡效果 */
+    }
+
+    .sidebar a, .dropdown-btn {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s; /* 添加背景颜色过渡效果 */
+    }
+
+    .sidebar a:hover, .dropdown-btn:hover {
+        background-color: #333; /* 鼠标悬停时的背景颜色 */
+    }
+
+    .active {
+        background-color: rgb(131, 133, 131);
+        color: white;
+    }
+
+    .dropdown-container1,
+    .dropdown-container2,
+    .dropdown-container3,
+    .dropdown-container4 {
+        display: none;
+        background-color: #262626;
+        padding-left: 8px;
+        transition: display 0.5s; /* 添加过渡效果 */
+    }
+
+    .fa-caret-down {
+        float: right;
+        padding-right: 8px;
+    }
+      /* 页面布局样式 */
+      #main {
+        margin-left: 200px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .chart {
+        width:400%;
+        height:1500px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+      }
+      .chart h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+      @media (max-width: 768px) {
+        /* 在小屏幕下隐藏导航栏 */
+        #sidebar {
+          left: -200px;
+        }
+        #main {
+          margin-left: 0;
+        }
+        .chart {
+          width: 100%;
+        }
+      }
+</style>
+</head>
+<body>  
+<!-- 引入 ECharts 库 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<!-- 导航栏 -->
+<div class="sidebar">
+    <nav>
+        <a href="1.html">主页</a>
+        <a href="2.html">知识搜索</a>
+    </nav>  
+    <button class="dropdown-btn">数据大屏
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container1">
+        <a href="service1.1.html">计算机网络</a>
+        <a href="service1.2.html">组成原理</a>
+        <a href="service1.3.html">操作系统</a>
+        <a href="service1.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">关键词分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container2">
+        <a href="service2.1.html">计算机网络</a>
+        <a href="service2.2.html">组成原理</a>
+        <a href="service2.3.html">操作系统</a>
+        <a href="service2.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">词云分析
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container3">
+        <a href="service3.1.html">计算机网络</a>
+        <a href="service3.2.html">组成原理</a>
+        <a href="service3.3.html">操作系统</a>
+        <a href="service3.4.html">数据结构</a>
+    </div>
+    <button class="dropdown-btn">知识图谱
+        <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container4">
+        <a href="service4.1.html">计算机网络</a>
+        <a href="service4.2.html">组成原理</a>
+        <a href="service4.3.html">操作系统</a>
+        <a href="service4.4.html">数据结构</a>
+    </div>
+</div>
+
+<div id="main">
+  <!-- HTML 代码 -->
+  <div class="chart">
+    <h1>计算机操作系统知识点分析</h1>
+    <h2>计算机操作系统知识点关键词提取</h2>
+    <div id="line-chart" style="width: 100%; height:700px;"></div>
+    <div id="pie-chart" style="width: 100%; height:700px;"></div>
+  </div>
+  </div>
+  <!-- ECharts库的JS代码 -->
+  <script>
+// JavaScript 代码
+var lineChart = echarts.init(document.getElementById('line-chart'));
+
+var option = {
+  title: {
+    text: '计算机操作系统知识点关键词提取（折线图）'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  xAxis: {
+    type: 'category',
+    data: [
+'数组',
+'链表',
+'栈85',
+'队列',
+'二叉树',
+'红黑树',
+'哈希表',
+'图',
+'散列表',
+'堆',
+'AVL树',
+'B树',
+'B+树',
+'斐波那契堆',
+'并查集',
+'前缀树 (Trie)',
+'排序算法',
+'搜索算法',
+'动态规划',
+'贪心算法',
+'分治算法',
+'回溯算法',
+'深度优先搜索',
+'广度优先搜索',
+'最短路径算法',
+'图的遍历',
+'拓扑排序',
+'最小生成树',
+],
+  axisLabel: {
+    interval: 0, //强制显示所有标签
+    rotate: -15, //标签旋转角度
+    margin: 2 //标签与轴线之间的距离
+  }
+},
+  yAxis: {
+    type: 'value',
+    min: 0,
+    max: 120,
+    interval: 20
+  },
+  series: [{
+    type: 'line',
+    data: [
+100, 105, 85, 80, 78, 70, 68, 46, 64, 82, 60, 38, 56, 54, 68, 50, 88, 46, 44, 34, 49, 38, 62, 34, 42, 30, 54, 26
+]
+  }]
+};
+lineChart.setOption(option);
+</script>
+<script>
+  // 环状图
+  var pieChart = echarts.init(document.getElementById('pie-chart'));
+
+  var option = {
+    title: {
+      text: '计算机操作系统知识点关键词分布占比（环状图）',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: [
+"进程管理",
+"线程调度",
+"同步机制",
+"死锁处理",
+"内存管理",
+"虚拟内存实现",
+"文件系统设计",
+"输入输出系统",
+"设备驱动程序",
+"系统调用接口",
+"中断处理",
+"系统安全机制",
+"网络通信协议",
+"用户与权限管理",
+"存储策略",
+"缓存策略",
+"进程通信",
+"多任务处理",
+"操作系统结构",
+"分布式操作系统",
+"实时操作系统",
+"操作系统虚拟化",
+"容错与恢复",
+"性能评估",
+"操作系统安全",
+"内核开发与调试",
+"系统引导与加载",
+"文件加密与安全"
+]
+    },
+    series: [
+      {
+        name: '关键词分布占比',
+        type: 'pie',
+        radius: ['40%', '60%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: '30',
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+{"value": 100, "name": "进程管理"},
+{"value": 105, "name": "线程调度"},
+{"value": 85, "name": "同步机制"},
+{"value": 80, "name": "死锁处理"},
+{"value": 78, "name": "内存管理"},
+{"value": 70, "name": "虚拟内存实现"},
+{"value": 68, "name": "文件系统设计"},
+{"value": 46, "name": "输入输出系统"},
+{"value": 64, "name": "设备驱动程序"},
+{"value": 82, "name": "系统调用接口"},
+{"value": 60, "name": "中断处理"},
+{"value": 38, "name": "系统安全机制"},
+{"value": 56, "name": "网络通信协议"},
+{"value": 54, "name": "用户与权限管理"},
+{"value": 68, "name": "存储策略"},
+{"value": 50, "name": "缓存策略"},
+{"value": 88, "name": "进程通信"},
+{"value": 46, "name": "多任务处理"},
+{"value": 44, "name": "操作系统结构"},
+{"value": 34, "name": "分布式操作系统"},
+{"value": 49, "name": "实时操作系统"},
+{"value": 38, "name": "操作系统虚拟化"},
+{"value": 62, "name": "容错与恢复"},
+{"value": 34, "name": "性能评估"},
+{"value": 42, "name": "操作系统安全"},
+{"value": 30, "name": "内核开发与调试"},
+{"value": 54, "name": "系统引导与加载"},
+{"value": 26, "name": "文件加密与安全"}
+]
+      }
+    ]
+  };
+
+  pieChart.setOption(option);
+</script>
+<script>
+    // JavaScript代码
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+</body>
+</html>
